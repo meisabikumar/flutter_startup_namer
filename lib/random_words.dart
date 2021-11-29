@@ -3,8 +3,10 @@ import 'package:english_words/english_words.dart';
 
 class _RandomWordsState extends State<RandomWords> {
   final wordPair = WordPair.random();
-  final _randomWordPairs = <WordPair>[]; // NEW
+  final _randomWordPairs = <WordPair>[];
   final _biggerFont = const TextStyle(fontSize: 18);
+
+  final _savedWordPairs = <WordPair>{}; //NEW
 
   Widget _buildList() {
     return ListView.builder(
@@ -25,11 +27,27 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair pair) {
+    final alreadySaved = _savedWordPairs.contains(pair); // NEW
+
     return ListTile(
       title: Text(
         pair.asPascalCase,
         style: _biggerFont,
       ),
+      trailing: Icon(
+        alreadySaved ? Icons.favorite : Icons.favorite_border,
+        color: alreadySaved ? Colors.red : null,
+        semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
+      ),
+      onTap: () {
+        setState(() {
+          if (alreadySaved) {
+            _savedWordPairs.remove(pair);
+          } else {
+            _savedWordPairs.add(pair);
+          }
+        });
+      },
     );
   }
 
